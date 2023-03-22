@@ -415,7 +415,6 @@ impl<'a, T: Copy + Ord> VecSet<'a, T> {
 /// let set: VecSet<i32> = set!(0,1,2,3,4,5,6,-1);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! set {
     ( $( $a:expr ),* ) => {
         {

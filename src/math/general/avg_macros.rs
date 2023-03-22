@@ -9,7 +9,6 @@
 /// assert_eq!(3.125, a);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! arithmetic_mean {
     ( $( $a:expr ),* ) => {
         {
@@ -33,7 +32,6 @@ pub use arithmetic_mean;
 /// assert_eq!(2.318840579710145, v);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! harmonic_mean {
     ( $( $a:expr ),* ) => {
         {
@@ -57,7 +55,6 @@ pub use harmonic_mean;
 /// assert_eq!(2.5, v);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! median {
     ( $( $a:expr ),* ) => {
         {
@@ -81,7 +78,6 @@ pub use median;
 /// assert_eq!(2, v);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! mode {
     ( $( $a:expr ),* ) => {
         {
@@ -105,7 +101,6 @@ pub use mode;
 /// assert_eq!(3.5, v);
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! mid_range {
     ( $( $a:expr ),* ) => {
         {

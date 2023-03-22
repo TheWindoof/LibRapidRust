@@ -40,7 +40,6 @@
 /// assert_eq!(true, eval_postfix!(1.0 1.0 + 2.0 % 0.0 ==));
 /// ```
 #[macro_export]
-#[must_use]
 macro_rules! eval_postfix {
     (@operator [$b:expr, $a:expr $(,$call_stack:expr)*] $operator:tt $($leftover:tt)*) => {
         eval_postfix!([$a $operator $b $(,$call_stack)*] $($leftover)*)
