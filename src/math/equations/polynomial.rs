@@ -41,7 +41,8 @@ impl<const C: usize, T: From<u8> +
                         std::ops::MulAssign +
                         std::cmp::PartialOrd +
                         std::ops::Sub +
-                        std::ops::Add> Polynomial<C, T> {
+                        std::ops::Add + 
+                        std::fmt::Display> Polynomial<C, T> {
     /// Create a new standard polynomial with *C* coefficients set to `1` and of *C - 1*th degree.
     /// # Examples
     /// ```
@@ -75,10 +76,9 @@ impl<const C: usize, T: From<u8> +
         let mut exponent: usize = self.get_degree();
 
         for coefficient in self.coefficients {
+            println!("Coeff: {}   term: {}^{} => {}", coefficient, x, exponent, x.pow(exponent));
             result.inc_by(coefficient * x.pow(exponent));
-            if exponent == 0
-            { break; }
-            exponent.dec();
+            if (exponent > 0) { exponent.dec(); }
         }
 
         result

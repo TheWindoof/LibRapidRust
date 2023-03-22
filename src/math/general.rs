@@ -322,8 +322,8 @@ impl<T: PartialOrd +
         { panic!("0^0 is undefined."); }
         
         let mut res = *self;
-        for _ in 2..power {
-            res *= res;
+        for _ in 2..(power + 1) {
+            res *= *self;
         }
         res
     }
