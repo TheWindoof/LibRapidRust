@@ -76,9 +76,10 @@ impl<const C: usize, T: From<u8> +
         let mut exponent: usize = self.get_degree();
 
         for coefficient in self.coefficients {
-            println!("Coeff: {}   term: {}^{} => {}", coefficient, x, exponent, x.pow(exponent));
+            
             result.inc_by(coefficient * x.pow(exponent));
-            if (exponent > 0) { exponent.dec(); }
+            if exponent > 0
+            { exponent.dec(); }
         }
 
         result
