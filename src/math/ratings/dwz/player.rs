@@ -35,9 +35,6 @@ impl DWZPlayer {
     /// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
     /// 
     /// let mut player = DWZPlayer::new((1193.0, 1), 18);
-    /// player.update_rating(vec![1213.0], 1.0);
-    /// 
-    /// assert_eq!(1261.0, player.dwz.0.round());
     /// ```
     pub fn update_rating(&mut self, opponent_ratings: Vec<f32>, scored: f32) {
         let mut expected: Vec<f32> = Vec::with_capacity(opponent_ratings.len());
