@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use LibRapidRust in a paper, please consider citing it as below."
+authors:
+- family-names: "Schleicher"
+  given-names: "Maximilian H.-J. A."
+title: "LibRapidRust: Optimised Mathematics for Rust"
+version: 0.4.1
+date-released: "2022-08-11"
+type: software
+url: "https://github.com/LibRapid/librapid"
+license: MIT
+license-url: "https://github.com/LibRapid/LibRapidRust/blob/master/LICENSE.md"
+repository-code: "https://github.com/LibRapid/LibRapidRust"
