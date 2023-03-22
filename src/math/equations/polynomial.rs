@@ -3,7 +3,7 @@
 // * TODO: Summation/Difference of Polynomials with arbitrary length.
 // * TODO: Macro for fast creation.
 
-use std::{ops::{Add, Sub, SubAssign, AddAssign}, fmt::Display};
+use std::{ops::{Add, Sub, SubAssign, AddAssign, Neg}, fmt::Display, fmt::Debug, convert::TryInto, convert::TryFrom};
 
 use crate::math::general::NumTools;
 /// The struct for storing and evaluating polynomials.
@@ -12,7 +12,8 @@ use crate::math::general::NumTools;
 /// * `T` - The type of the coefficients.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Polynomial<const C: usize, T> {
-    coefficients: [T; C]
+    coefficients: [T; C],
+    solutions:    Option<[Option<T>; C]>
 }
 
 impl<const C: usize, T: From<u8> +
@@ -42,7 +43,8 @@ impl<const C: usize, T: From<u8> +
     /// ```
     pub fn new() -> Polynomial<C, T> {
         Polynomial {
-            coefficients: [1u8.into(); C]
+            coefficients: [1u8.into(); C],
+            solutions:    None
         }
     }
     /// Create a new polynomial with *C* custom coefficients.
@@ -59,7 +61,8 @@ impl<const C: usize, T: From<u8> +
     /// ```
     pub fn new_from_coefficients(coefficients: [T; C]) -> Polynomial<C, T> {
         Polynomial {
-            coefficients
+            coefficients,
+            solutions: None
         }
     }
     /// Gets the coefficients of a `Polynomial`.
@@ -113,6 +116,44 @@ impl<const C: usize, T: From<u8> +
 
         result
     }
+
+    pub fn get_solutions(&mut self) -> Option<[Option<T>; C]>
+    where
+    f64: From<T> + TryInto<T>,
+    T:   Neg<Output = T> + TryFrom<f64>,
+    <f64 as std::convert::TryInto<T>>::Error: Debug,
+    <T as std::convert::TryFrom<f64>>::Error: Debug {
+        if self.solutions.is_some()
+        { return self.solutions; }
+
+        let mut res = [None; C];
+
+        if self.get_degree() == 2 {
+            let discriminant = self.coefficients[1].square() -
+                               T::from(4) * self.coefficients[0] * self.coefficients[2];
+            if discriminant < T::from(0)
+            { return None; }
+            let x_1 = (- self.coefficients[1] +
+                      (f64::from(discriminant).sqrt()).try_into().unwrap()) /
+                      (T::from(2) * self.coefficients[0]);
+    
+            let x_2 = (- self.coefficients[1] -
+                      (f64::from(discriminant).sqrt()).try_into().unwrap()) /
+                      (T::from(2) * self.coefficients[0]);
+
+            match x_1 == x_2 {
+                true  => { res[0] = Some(x_1); self.solutions = Some(res); }
+                false => { res[0] = Some(x_1); res[1] = Some(x_2);
+                           self.solutions = Some(res) }
+            }
+            return self.solutions.clone();
+        }
+        if self.get_degree() == 1 {
+            res[0] = Some(- self.coefficients[1] / self.coefficients[0]);
+            return self.solutions;
+        }
+        None
+    }
 }
 
 impl<const C: usize, T: std::ops::AddAssign + Copy> Add for Polynomial<C, T> {
@@ -127,7 +168,8 @@ impl<const C: usize, T: std::ops::AddAssign + Copy> Add for Polynomial<C, T> {
                     res_coeff[index] += *i;
                 }
                 res_coeff
-            }
+            },
+            solutions: None
         }
     }
 }
@@ -152,7 +194,8 @@ impl<const C: usize, T: std::ops::SubAssign +
             break;
         }
         Polynomial {
-            coefficients: res_coeff
+            coefficients: res_coeff,
+            solutions:    None
         }
     }
 }
