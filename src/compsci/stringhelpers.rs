@@ -346,9 +346,9 @@ fn backend_levenshtein(str1: &str, str2: &str) -> usize {
 }
 
 fn backend_to_isize(s: &str) -> Option<isize> {
-    let _s = s.trim();
-    let mut res = 0;
-    let flag = _s.starts_with('-');
+    let     _s           = s.trim();
+    let mut res          = 0;
+    let     flag         = _s.starts_with('-');
     let mut power_of_ten = 1;
     for (i, character) in _s.chars().rev().enumerate() {
         if character == '-' && i != _s.len() - 1
