@@ -131,7 +131,7 @@ impl<const C: usize, T: From<u8> +
         if self.get_degree() == 2 {
             let discriminant = self.coefficients[1].square() -
                                T::from(4) * self.coefficients[0] * self.coefficients[2];
-            if discriminant < T::from(0)
+            if discriminant.is_negative()
             { return None; }
             let x_1 = (- self.coefficients[1] +
                       (f64::from(discriminant).sqrt()).try_into().unwrap()) /

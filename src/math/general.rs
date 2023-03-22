@@ -248,6 +248,18 @@ pub trait NumTools<T> {
     /// ```
     #[must_use = "This returns the result of the operation, without modifying the original."]
     fn pow(&self, power: usize) -> Self;
+    /// Determines whether a number is negative. Only implemented for readability.
+    /// # Returns
+    /// A `bool`.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::general::NumTools;
+    /// 
+    /// assert_eq!(5u8.is_negative(), false);
+    /// assert_eq!((-5.0).is_negative(), true);
+    /// ```
+    #[must_use]
+    fn is_negative(&self) -> bool;
 }
 
 impl<T: PartialOrd +
@@ -326,6 +338,11 @@ impl<T: PartialOrd +
             res *= *self;
         }
         res
+    }
+
+    #[inline]
+    fn is_negative(&self) -> bool {
+        *self < T::from(0)
     }
 }
 

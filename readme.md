@@ -7,33 +7,6 @@
 
 LibRapid for Rust - Fast. Reliable. Lightweight.
 ============
-Current Statistics
------
-
-| **Item**     | **Count** | **Used RegEx**       | **Used Method**     |
-|--------------|-----------|----------------------|---------------------|
-| Examples     | 313       |(No RegEx required)   | `cargo test`        |
-| Constants    | 187       |`pub const [^f][^n]`  | VSCode RegEx-Search |
-| Functions    | 131       |`pub c?o?n?s?t? ?fn`  | VSCode RegEx-Search |
-| Modules      | 31        |`pub mod`             | VSCode RegEx-Search |
-| Traits       | 14        |`pub trait`           | VSCode RegEx-Search |
-| Structs      | 13        |`pub struct`          | VSCode RegEx-Search |
-| Macros       | 7         |`macro_rules`         | VSCode RegEx-Search |
-| Dependencies | 4         |(No RegEx required)   | `Cargo.toml`        |
-
-**Changelog**
------
-0.4.2
-_____
-- Added Public API: `math::equations::polynomial`.
-- Added Public API: `math::general::round_to_n_mult()`.
-- Added Public API: `math::general::NumTools::pow()`.
-- Added Public API: `math::general::factorial()`.
-- Added Public API: `math::general::div_factorials()`.
-- Added Public API: `compsci::stringhelpers::StringUtils::to_isize()`.
-- Added Public API: `compsci::general::SliceOps::position_of()`.
------
-
 Why X? Why Y?
 -----
 
