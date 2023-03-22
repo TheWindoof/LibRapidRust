@@ -8,3 +8,4 @@ pub mod primes;
 pub mod sets;
 pub mod equations;
 pub mod complex;
+pub mod ratings;

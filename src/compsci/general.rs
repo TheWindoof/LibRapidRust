@@ -3,7 +3,7 @@ use crate::math::general::NumTools;
 use std::{intrinsics::transmute, fmt::Debug, ops::{*}, convert::TryFrom};
 use core::mem::*;
 
-const BITWISE_ERR1: &str = "Arguments were not the same size in memory.";
+const BITWISE_ERR1: &str = "Arguments were not the same size in memory. Consider casting the smaller argument.";
 const BITWISE_ERR2: &str = "U is bigger than T. Consider reversing the arguments.";
 const MANTISSA_MASK_64:      u64 = 0b0000000000001111111111111111111111111111111111111111111111111111;
 const EXPONENT_MASK_64:      u64 = 0b0111111111110000000000000000000000000000000000000000000000000000;
