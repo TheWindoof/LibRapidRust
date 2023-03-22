@@ -12,10 +12,10 @@ Current Statistics
 
 | **Item**     | **Count** | **Used RegEx**       | **Used Method**     |
 |--------------|-----------|----------------------|---------------------|
-| Examples     | 306       |(No RegEx required)   | `cargo test`        |
+| Examples     | 312       |(No RegEx required)   | `cargo test`        |
 | Constants    | 187       |`pub const [^f][^n]`  | VSCode RegEx-Search |
 | Functions    | 130       |`pub c?o?n?s?t? ?fn`  | VSCode RegEx-Search |
-| Modules      | 30        |`pub mod`             | VSCode RegEx-Search |
+| Modules      | 31        |`pub mod`             | VSCode RegEx-Search |
 | Traits       | 14        |`pub trait`           | VSCode RegEx-Search |
 | Structs      | 13        |`pub struct`          | VSCode RegEx-Search |
 | Macros       | 7         |`macro_rules`         | VSCode RegEx-Search |

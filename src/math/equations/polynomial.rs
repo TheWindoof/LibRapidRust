@@ -1,7 +1,6 @@
 //! Polynomials in Rust.
-// * TODO: Documentation.
 // * TODO: Finding roots.
-// * TODO: Summation/Difference of Polynomial&s with arbitrary length.
+// * TODO: Summation/Difference of Polynomials with arbitrary length.
 // * TODO: Macro for fast creation.
 
 use std::{ops::{Add, Sub, SubAssign, AddAssign}, fmt::Display};
@@ -14,15 +13,6 @@ use crate::math::general::NumTools;
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Polynomial<const C: usize, T> {
     coefficients: [T; C]
-}
-#[test]
-fn test() {
-    let p: Polynomial<5, usize> = Polynomial::new();
-    assert_eq!(p.coefficients.len(), 5);
-    assert_eq!(p.get_degree(), 4);
-    assert_eq!(p.coefficients, [1,1,1,1,1]);
-    assert_eq!(&p.to_string(), "1x^4 + 1x^3 + 1x^2 + 1x^1 + 1");
-    assert_eq!(p.eval(2), 31);
 }
 
 impl<const C: usize, T: From<u8> +
@@ -41,11 +31,13 @@ impl<const C: usize, T: From<u8> +
                         std::ops::Add + 
                         std::fmt::Display> Polynomial<C, T> {
     /// Create a new standard polynomial with *C* coefficients set to `1` and of *C - 1*th degree.
+    /// # Returns
+    /// A new `Polynomial<C, T>`
     /// # Examples
     /// ```
     /// use lib_rapid::math::equations::polynomial::Polynomial;
     /// 
-    /// let p: Polynomial<4, T> = Polynomial::new();
+    /// let p: Polynomial<4, f32> = Polynomial::new();
     /// assert!(p.get_degree() == 3);
     /// ```
     pub fn new() -> Polynomial<C, T> {
@@ -53,21 +45,61 @@ impl<const C: usize, T: From<u8> +
             coefficients: [1u8.into(); C]
         }
     }
-
+    /// Create a new polynomial with *C* custom coefficients.
+    /// # Arguments
+    /// * `coefficients: [T; C]` - The coefficients of the polynomial.
+    /// # Returns
+    /// A new `Polynomial<C, T>`
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
+    /// assert!(p.get_degree() == 3);
+    /// ```
     pub fn new_from_coefficients(coefficients: [T; C]) -> Polynomial<C, T> {
         Polynomial {
             coefficients
         }
     }
-
+    /// Gets the coefficients of a `Polynomial`.
+    /// # Returns
+    /// A `[T; C]`.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
+    /// assert_eq!(p.get_coefficients(), [1, 3, 5, 2]);
+    /// ```
     pub fn get_coefficients(&self) -> [T; C] {
         self.coefficients
     }
-
+    /// Gets the degree of a `Polynomial`.
+    /// # Returns
+    /// A `[T; C]`.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
+    /// assert_eq!(p.get_degree(), 3);
+    /// ```
     pub fn get_degree(&self) -> usize {
         self.coefficients.len() - 1
     }
-
+    /// Evaluates a `Polynomial` for a given input `x`.
+    /// # Arguments
+    /// * `x: T` the input for the polynomial.
+    /// # Returns
+    /// A `T`.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
+    /// assert_eq!(p.eval(4), 134);
+    /// ```
     pub fn eval(&self, x: T) -> T {
         let mut result: T = 0u8.into();
         let mut exponent: usize = self.get_degree();
@@ -146,7 +178,15 @@ impl<const C: usize, T: Copy +
         *self = *self + rhs;
     }
 }
-
+/// Converts a polynomial into a `String.`
+/// # Examples
+/// ```
+/// use lib_rapid::math::equations::polynomial::Polynomial;
+/// 
+/// let p: Polynomial<4, isize> = Polynomial::new_from_coefficients([1, -3, 5, 2]);
+/// 
+/// assert_eq!(&p.to_string(), "1x^3 - 3x^2 + 5x + 2");
+/// ```
 impl<const C: usize, T: Display +
         PartialOrd +
         From<u8> +
@@ -156,10 +196,22 @@ impl<const C: usize, T: Display +
         let mut current_exponent: usize;
         for (exp, coeff) in self.coefficients.iter().enumerate() {
             current_exponent = self.coefficients.len() - exp - 1;
-            if current_exponent != 0
-            { res.push_str(&format!("{}x^{} + ", coeff, current_exponent)); }
+            if current_exponent == 0
+            { break; }
+            if coeff < &0u8.into()
+            { res.push_str(&format!(" - {}x", &coeff.to_string()[1..coeff.to_string().len()])); }
+            else
+            { res.push_str(&format!(" + {}x", coeff)); }
+
+            if current_exponent != 1
+            { res.push_str(&format!("^{}", current_exponent)); }
         }
-        res.push_str(&format!("{}", self.coefficients[self.coefficients.len() - 1]));
-        write!(f, "{}", res)
+        if self.coefficients[self.coefficients.len() - 1] < 0u8.into()
+        { res.push_str(&format!(" - {}", &self.coefficients[self.coefficients.len() - 1].to_string()[1..self.coefficients[self.coefficients.len() - 1].to_string().len()])); }
+        else
+        { res.push_str(&format!(" + {}", self.coefficients[self.coefficients.len() - 1])); }
+
+        
+        write!(f, "{}", &res[3..res.len()])
     }
 }
