@@ -250,7 +250,18 @@ impl<const C: usize, T: Display +
             { res.push_str(&format!("^{}", current_exponent)); }
         }
         if self.coefficients[self.coefficients.len() - 1] < 0u8.into()
-        { res.push_str(&format!(" - {}", &self.coefficients[self.coefficients.len() - 1].to_string()[1..self.coefficients[self.coefficients.len() - 1].to_string().len()])); }
+        { res.push_str(
+            &format!(" - {}",
+                     &self.coefficients[self.coefficients.len() - 1]
+                     .to_string()
+                     [1..self.coefficients
+                        [self.coefficients.len() - 1]
+                        .to_string()
+                        .len()
+                    ]
+                )
+            );
+        }
         else
         { res.push_str(&format!(" + {}", self.coefficients[self.coefficients.len() - 1])); }
 
