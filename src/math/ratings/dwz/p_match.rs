@@ -1,5 +1,6 @@
 use super::player::DWZPlayer;
 
+/// A match between two opponents.
 pub struct Match<'a> {
     player_one: &'a mut DWZPlayer,
     player_two: &'a mut DWZPlayer,
@@ -17,12 +18,12 @@ impl Match<'_> {
     /// A new `Match<'a>`.
     /// # Examples
     /// ```
-    /// use math::ratings::dwz::{player::DWZPlayer, match::Match};
+    /// use lib_rapid::math::ratings::dwz::{player::DWZPlayer, p_match::Match};
     /// 
-    /// let beth = DWZPlayer::new((1193.0, 1), 18);
-    /// let eric = DWZPlayer::new((1213.0, 1), 25);
+    /// let mut beth = DWZPlayer::new((1193.0, 1), 18);
+    /// let mut eric = DWZPlayer::new((1213.0, 1), 25);
     /// 
-    /// let mut first_match = Match::new(&beth, &eric, 255) // 255 is used here for not yet decided
+    /// let mut first_match = Match::new(&mut beth, &mut eric, -1.0); // -1.0 is used here for not yet decided
     /// ```
     pub fn new<'a>(player_one: &'a mut DWZPlayer, player_two: &'a mut DWZPlayer, result: f32) -> Match<'a> {
         Match { player_one, player_two, result }
@@ -30,17 +31,17 @@ impl Match<'_> {
     /// Update the ratings of both players.
     /// # Examples
     /// ```
-    /// use math::ratings::dwz::{player::DWZPlayer, match::Match};
+    /// use lib_rapid::math::ratings::dwz::{player::DWZPlayer, p_match::Match};
     /// 
-    /// let beth = DWZPlayer::new((1193.0, 1), 18);
-    /// let eric = DWZPlayer::new((1213.0, 1), 25);
+    /// let mut beth = DWZPlayer::new((1193.0, 1), 18);
+    /// let mut eric = DWZPlayer::new((1213.0, 1), 25);
     /// 
-    /// let mut first_match = Match::new(&beth, &eric, 255) // 255 is used here for not yet decided
+    /// let mut first_match = Match::new(&mut beth, &mut eric, -1.0); // -1.0 is used here for not yet decided
     /// first_match.result = 1.0; // Beth wins
     /// first_match.update_ratings();
     /// 
     /// assert_eq!(1261.0, beth.dwz.0.round());
-    /// assert_eq!(1261.0, eric.dwz.0.round());
+    /// assert_eq!(1183.0, eric.dwz.0.round());
     /// ```
     pub fn update_ratings(&mut self) {
         let p2_res = match self.result {
@@ -49,7 +50,9 @@ impl Match<'_> {
             x if x == 0.0 => { 1.0 }
             _             => { panic!("Unexpected value for game result: {}", self.result) }
         };
-        self.player_one.update_rating(vec![self.player_two.dwz.0], self.result);
-        self.player_one.update_rating(vec![self.player_one.dwz.0], p2_res);
+        let temp_dwz_1 = self.player_one.dwz.0;
+        let temp_dwz_2 = self.player_two.dwz.0;
+        self.player_one.update_rating(vec![temp_dwz_2], self.result);
+        self.player_two.update_rating(vec![temp_dwz_1], p2_res);
     }
 }
