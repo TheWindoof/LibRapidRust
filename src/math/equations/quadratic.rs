@@ -1,7 +1,7 @@
 //! Quadratic functions.
 use std::{fmt::Display, convert::*, ops::*};
 use crate::math::general::NumTools;
-use super::linear::LinearEquation;
+use super::{linear::LinearEquation, polynomial::Polynomial};
 /// A struct for storing quadratic equations of the form `f(x) = ax² + bx + c`.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct QuadraticEquation<T> {
@@ -25,9 +25,8 @@ impl<T: Copy +
         Sub<Output = T> +
         Div<Output = T> +
         Neg<Output = T>> QuadraticEquation<T>
-        where
-        f64: From<T>,
-        <T as TryFrom<f64>>::Error: std::fmt::Debug {
+        where <T as TryFrom<f64>>::Error: std::fmt::Debug,
+              f64: From<T> {
     /// Create a new `QuadraticEquation` with the values `a = 1, b = 0, c = 0`.
     /// 
     /// # Examples
@@ -359,5 +358,32 @@ impl<T: Display +
         else
         { res.push_str(&format!(" + {}", self.c)); }
         write!(f, "{}", res)
+    }
+}
+
+impl<const C: usize, T: Add<Output = T> +
+                        Sub<Output = T> +
+                        Mul<Output = T> +
+                        Div<Output = T> +
+                        PartialOrd +
+                        Neg<Output = T> +
+                        From<u8> +
+                        Copy +
+                        SubAssign +
+                        AddAssign +
+                        MulAssign +
+                        TryFrom<f64> +
+                        Display> From<Polynomial<C, T>> for QuadraticEquation<T> {
+    fn from(val: Polynomial<C, T>) -> Self {
+        if C > 3
+        { panic!("Could not convert because coefficients were more than 3."); }
+
+        QuadraticEquation { a:          val.get_coefficients()[0],
+                            b:          val.get_coefficients()[1],
+                            c:          val.get_coefficients()[2],
+                            vertex:     None,
+                            solutions:  (None, None),
+                            derivative: None
+        }
     }
 }

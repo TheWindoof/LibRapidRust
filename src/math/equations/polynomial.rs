@@ -3,13 +3,10 @@
 // * TODO: Finding roots.
 // * TODO: Summation/Difference of Polynomial&s with arbitrary length.
 // * TODO: Macro for fast creation.
-// * TODO: Interoperation with QuadraticEquation and LinearEquation.
 
 use std::{ops::{Add, Sub, SubAssign, AddAssign}, fmt::Display};
 
 use crate::math::general::NumTools;
-
-use super::{quadratic::QuadraticEquation, linear::LinearEquation};
 /// The struct for storing and evaluating polynomials.
 /// # Generics
 /// * `const C: usize` - The number of coefficients (degree = C - 1).
@@ -83,21 +80,6 @@ impl<const C: usize, T: From<u8> +
         }
 
         result
-    }
-
-    pub fn from_quadratic(q: QuadraticEquation<T>) -> Polynomial<3, T> {
-        let mut coeff = [0u8.into(); 3];
-        coeff[0] = q.a;
-        coeff[1] = q.b;
-        coeff[2] = q.c;
-        Polynomial { coefficients: coeff }
-    }
-
-    pub fn from_linear(l: LinearEquation<T>) -> Polynomial<2, T> {
-        let mut coeff = [0u8.into(); 2];
-        coeff[0] = l.m;
-        coeff[1] = l.c;
-        Polynomial { coefficients: coeff }
     }
 }
 

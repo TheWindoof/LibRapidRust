@@ -2,7 +2,7 @@
 
 use std::{fmt::Display, convert::TryFrom, ops::*, cmp::*};
 use crate::math::general::NumTools;
-use super::quadratic::QuadraticEquation;
+use super::{quadratic::QuadraticEquation, polynomial::Polynomial};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 /// The struct for storing linear functions of the form `f(x) = mx + c`.
@@ -25,7 +25,6 @@ impl<T: Copy +
         PartialOrd +
         NumTools<T>> LinearEquation<T>
         where
-        f64: From<T>,
         <T as TryFrom<f64>>::Error: std::fmt::Debug {
     /// Create a new `LinearEquation`.
     /// # Arguments
@@ -203,7 +202,7 @@ impl<T: Copy +
     #[inline]
     #[must_use]
     pub fn intsect_with_quadratic(&self, other: &QuadraticEquation<T>)
-    -> (Option<(T, T)>, Option<(T, T)>) {
+    -> (Option<(T, T)>, Option<(T, T)>) where f64: From<T> {
         let mut q: QuadraticEquation<T> =
         QuadraticEquation::new_from_coefficients(other.a(),
                                                  other.b() - self.m,
@@ -256,6 +255,33 @@ impl<T: From<u8> +
         match self.c > T::from(0) {
             true  => { write!(f, "{}x + {}", self.m, self.c) }
             false => { write!(f, "{}x - {}", self.m, - self.c) }
+        }
+    }
+}
+
+impl<const C: usize, T: Add<Output = T> +
+                        Sub<Output = T> +
+                        Mul<Output = T> +
+                        Div<Output = T> +
+                        PartialOrd +
+                        Neg<Output = T> +
+                        From<u8> +
+                        Copy +
+                        SubAssign +
+                        AddAssign +
+                        MulAssign +
+                        TryFrom<f64> +
+                        TryFrom<f64> +
+                        Display> From<Polynomial<C, T>> for LinearEquation<T>
+                        where f64: From<T>,
+                        <T as std::convert::TryFrom<f64>>::Error: std::fmt::Debug {
+    fn from(val: Polynomial<C, T>) -> Self {
+        if C > 2
+        { panic!("Could not convert because coefficients were more than 2."); }
+
+        LinearEquation { m:    val.get_coefficients()[0],
+                         c:    val.get_coefficients()[1],
+                         root: None
         }
     }
 }
