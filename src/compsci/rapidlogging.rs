@@ -44,7 +44,7 @@ impl Logger {
     }
     /// Logs to a `Logger`.
     /// # Returns
-    /// A `Result<bool, String>`. `true` if it was successful, otherwise the error message as a `String`.
+    /// A `Result<(), String>`. `()` if it was successful, otherwise the error message as a `String`.
     /// # Examples
     /// ```
     /// use lib_rapid::compsci::rapidlogging::Logger;
@@ -55,7 +55,7 @@ impl Logger {
     /// let _ = l.log(Some(vec!["Warning"]), "This is a warning.");
     /// ```
     /// As you can see, we initialise a new Logger `l` with the buffer size 3. This means that only after 3x logging, the logger writes to the file and to the console.
-    pub fn log(&mut self, prefixes: Option<Vec<&str>>, msg: &str) -> Result<bool, String> {
+    pub fn log(&mut self, prefixes: Option<Vec<&str>>, msg: &str) -> Result<(), String> {
         self.buff_count.inc();
         let mut out: String = format!("[{}]", Utc::now()
                                                    .to_rfc3339_opts(SecondsFormat::Secs,
@@ -72,7 +72,7 @@ impl Logger {
         if self.buff_count == self.buff_size
         { return self.backend_log(); }
 
-        Ok(true)
+        Ok(())
     }
     /// Resets `buffer` and `buff_counter`.
     pub fn reset_buffs(&mut self) {
@@ -80,7 +80,7 @@ impl Logger {
         self.buffer = String::new();
     }
     /// For cleaner code, the main functionality is hidden from the user in this function.
-    fn backend_log(&mut self) -> Result<bool, String> {
+    fn backend_log(&mut self) -> Result<(), String> {
         if self.log_to_file { 
             let file = OpenOptions::new()
                                     .create(true)
@@ -94,6 +94,7 @@ impl Logger {
                 Ok(_)  => { }
                 Err(e) => { return Err(format!("Problem writing to file: {:?}", e)); }
             }
+            
         }
 
         if self.log_to_console {
@@ -101,6 +102,7 @@ impl Logger {
             std::io::stdout().flush().unwrap();
         }
         self.reset_buffs();
-        Ok(true)
+
+        Ok(())
     }
 }

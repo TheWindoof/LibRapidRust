@@ -67,14 +67,14 @@ pub trait StringUtils {
     /// 
     /// let s = "([{Some text won't throw it off}])";
     /// 
-    /// assert_eq!(Ok(true), s.validate_brackets());
+    /// assert_eq!(Ok(()), s.validate_brackets());
     /// ```
     /// ```
     /// use lib_rapid::compsci::stringhelpers::StringUtils;
     /// 
     /// let s = String::from("([{}])");
     /// 
-    /// assert_eq!(Ok(true), s.validate_brackets());
+    /// assert_eq!(Ok(()), s.validate_brackets());
     /// ```
     /// ```
     /// use lib_rapid::compsci::stringhelpers::StringUtils;
@@ -97,10 +97,10 @@ pub trait StringUtils {
     /// 
     /// assert_eq!(Err(3), s.validate_brackets());
     /// ```
-    fn validate_brackets(&self) -> Result<bool, usize>;
+    fn validate_brackets(&self) -> Result<(), usize>;
     /// Checks if a String is alphanumeric.
     /// # Returns
-    /// A `Result<bool, usize>`: `true` if it is alphanumeric, else the index of the non alpha numeric character.
+    /// A `Result<(), usize>`: `true` if it is alphanumeric, else the index of the non alpha numeric character.
     /// ```
     /// use lib_rapid::compsci::stringhelpers::StringUtils;
     /// 
@@ -109,17 +109,17 @@ pub trait StringUtils {
     /// assert_eq!(false, "äÄ".is_alphanumeric().is_ok());
     /// assert_eq!(2, "Heä10!".is_alphanumeric().err().unwrap());
     /// ```
-    fn is_alphanumeric(&self) -> Result<bool, usize>;
+    fn is_alphanumeric(&self) -> Result<(), usize>;
     /// Checks if a String is numeric.
     /// # Returns
-    /// A `Result<bool, usize>`: `true` if it is alphanumeric, else the index of the non alpha numeric character.
+    /// A `Result<(), usize>`: `true` if it is alphanumeric, else the index of the non alpha numeric character.
     /// ```
     /// use lib_rapid::compsci::stringhelpers::StringUtils;
     /// 
     /// assert_eq!(1, "3ll0".is_numeric().err().unwrap());
     /// assert_eq!(true, "30".is_numeric().is_ok());
     /// ```
-    fn is_numeric(&self) -> Result<bool, usize>;
+    fn is_numeric(&self) -> Result<(), usize>;
     /// Gets the similarity between two Strings ( correct characters divided by length). In other words, this similarity measures the character changes needed for the two Strings to match.
     /// # Arguments
     /// * `other: &str` - The other string to be compared to.
@@ -172,15 +172,15 @@ impl StringUtils for String {
         self.as_bytes()[index]
     }
     #[inline]
-    fn validate_brackets(&self) -> Result<bool, usize> {
+    fn validate_brackets(&self) -> Result<(), usize> {
         backend_val_brackets(self)
     }
     #[inline]
-    fn is_alphanumeric(&self) -> Result<bool, usize> {
+    fn is_alphanumeric(&self) -> Result<(), usize> {
         backend_alphanumeric(self)
     }
     #[inline]
-    fn is_numeric(&self) -> Result<bool, usize> {
+    fn is_numeric(&self) -> Result<(), usize> {
         backend_numeric(self)
     }
     #[inline]
@@ -207,15 +207,15 @@ impl StringUtils for str {
         self.as_bytes()[index]
     }
     #[inline]
-    fn validate_brackets(&self) -> Result<bool, usize> {
+    fn validate_brackets(&self) -> Result<(), usize> {
         backend_val_brackets(self)
     }
     #[inline]
-    fn is_alphanumeric(&self) -> Result<bool, usize> {
+    fn is_alphanumeric(&self) -> Result<(), usize> {
         backend_alphanumeric(self)
     }
     #[inline]
-    fn is_numeric(&self) -> Result<bool, usize> {
+    fn is_numeric(&self) -> Result<(), usize> {
         backend_numeric(self)
     }
     #[inline]
@@ -232,7 +232,7 @@ impl StringUtils for str {
     }
 }
 
-fn backend_val_brackets(s: &str) -> Result<bool, usize> {
+fn backend_val_brackets(s: &str) -> Result<(), usize> {
     let mut res_vec: Vec<char> = Vec::with_capacity(s.len());
     let mut i: usize = 0;
     for c in s.chars() {
@@ -248,25 +248,25 @@ fn backend_val_brackets(s: &str) -> Result<bool, usize> {
 
     if !res_vec.is_empty()
     { return Err(i); }
-    Ok(true)
+    Ok(())
 }
 
-fn backend_numeric(s: &str) -> Result<bool, usize> {
+fn backend_numeric(s: &str) -> Result<(), usize> {
     for c in s.chars().enumerate() {
         if !(c.1 as u8).is_in_range(48, 57)
         { return Err(c.0); }
     }
-    Ok(true)
+    Ok(())
 }
 
-fn backend_alphanumeric(s: &str) -> Result<bool, usize> {
+fn backend_alphanumeric(s: &str) -> Result<(), usize> {
     for c in s.chars().enumerate() {
         if !((c.1 >= '0' && c.1 <= '9') ||
              (c.1 >= 'a' && c.1 <= 'z') || 
              (c.1 >= 'A' && c.1 <= 'Z'))
         { return Err(c.0); }
     }
-    Ok(true)
+    Ok(())
 }
 
 fn backend_sim(s1: &str, s2: &str) -> f32 {
