@@ -361,19 +361,19 @@ impl<T: Display +
     }
 }
 
-impl<const C: usize, T: Add<Output = T> +
-                        Sub<Output = T> +
-                        Mul<Output = T> +
-                        Div<Output = T> +
-                        PartialOrd +
-                        Neg<Output = T> +
-                        From<u8> +
-                        Copy +
-                        SubAssign +
-                        AddAssign +
-                        MulAssign +
-                        TryFrom<f64> +
-                        Display> From<Polynomial<C, T>> for QuadraticEquation<T> {
+impl<T: Add<Output = T> +
+        Sub<Output = T> +
+        Mul<Output = T> +
+        Div<Output = T> +
+        PartialOrd +
+        Neg<Output = T> +
+        From<u8> +
+        Copy +
+        SubAssign +
+        AddAssign +
+        MulAssign +
+        TryFrom<f64> +
+        Display, const C: usize> From<Polynomial<C, T>> for QuadraticEquation<T> {
     fn from(val: Polynomial<C, T>) -> Self {
         if C > 3
         { panic!("Could not convert because coefficients were more than 3."); }
