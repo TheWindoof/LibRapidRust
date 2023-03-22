@@ -5,12 +5,12 @@ use super::linear::LinearEquation;
 /// A struct for storing quadratic equations of the form `f(x) = ax² + bx + c`.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct QuadraticEquation<T> {
-    a:          T,
-    b:          T,
-    c:          T,
-    vertex:     Option<(T, T)>,
-    solutions:  (Option<T>, Option<T>),
-    derivative: Option<LinearEquation<T>>
+    pub(crate) a:          T,
+    pub(crate) b:          T,
+    pub(crate) c:          T,
+    vertex:                Option<(T, T)>,
+    solutions:             (Option<T>, Option<T>),
+    derivative:            Option<LinearEquation<T>>
 }
 
 impl<T: Copy +

@@ -7,9 +7,9 @@ use super::quadratic::QuadraticEquation;
 #[derive(Clone, Copy, Debug, PartialEq)]
 /// The struct for storing linear functions of the form `f(x) = mx + c`.
 pub struct LinearEquation<T> {
-    m:    T,
-    c:    T,
-    root: Option<T>
+    pub(crate) m:    T,
+    pub(crate) c:    T,
+    root:            Option<T>
 }
 
 impl<T: Copy +

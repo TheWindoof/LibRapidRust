@@ -244,6 +244,7 @@ pub trait NumTools<T> {
     /// use lib_rapid::math::general::NumTools;
     /// 
     /// assert_eq!(5.pow(4), 625);
+    /// assert_eq!(5.pow(0), 1);
     /// ```
     #[must_use = "This returns the result of the operation, without modifying the original."]
     fn pow(&self, power: usize) -> Self;
@@ -277,22 +278,22 @@ impl<T: PartialOrd +
     }
 
     #[inline]
-    fn dec(&mut self) {
-        *self -= 1u8.into();
-    }
-
-    #[inline]
-    fn dec_by(&mut self, n: Self) {
-        *self -= n;
-    }
-
-    #[inline]
     fn inc(&mut self) {
         *self += 1u8.into();
     }
+
     #[inline]
     fn inc_by(&mut self, n: Self) {
         *self += n;
+    }
+
+    #[inline]
+    fn dec(&mut self) {
+        *self -= 1u8.into();
+    }
+    #[inline]
+    fn dec_by(&mut self, n: Self) {
+        *self -= n;
     }
     #[inline]
     fn square(&self) -> Self {
@@ -310,6 +311,16 @@ impl<T: PartialOrd +
 
     #[inline]
     fn pow(&self, power: usize) -> Self {
+        let self_is_zero  = self  == &0u8.into();
+        let power_is_zero = power == 0;
+
+        if self_is_zero && !power_is_zero
+        { return 0u8.into(); }
+        if !self_is_zero && power_is_zero
+        { return 1u8.into(); }
+        if self_is_zero && power_is_zero
+        { panic!("0^0 is undefined."); }
+        
         let mut res = *self;
         for _ in 2..power {
             res *= res;
