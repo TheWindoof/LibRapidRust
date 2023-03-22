@@ -2,24 +2,42 @@ use std::cmp::min;
 
 use crate::math::general::NumTools;
 
+/// The player necessary for a DWZ evaluation.
 pub struct DWZPlayer {
     pub dwz:             (f32, u16),
     pub age:             u8,
 }
 
-/// ```
-/// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
-/// 
-/// let mut player = DWZPlayer::new((1193.0, 1), 18);
-/// player.update_rating(vec![1213.0], 1.0);
-/// 
-/// assert_eq!(1261.0, player.dwz.0.round());
-/// ```
 impl DWZPlayer {
+    /// Create a new player.
+    /// # Arguments
+    /// * `dwz: (f32, u16)` - The rating. `f32` is the actual rating, `u16` the index which indicates the played tournaments.
+    /// * `age: u8` - The age of the player.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
+    /// 
+    /// let mut player = DWZPlayer::new((1193.0, 1), 18);
+    /// player.update_rating(vec![1213.0], 1.0);
+    /// 
+    /// assert_eq!(1261.0, player.dwz.0.round());
+    /// ```
     pub fn new(dwz: (f32, u16), age: u8) -> DWZPlayer {
         DWZPlayer { dwz, age }
     }
-
+    /// Update a player's rating.
+    /// # Arguments
+    /// * `opponent_ratings: Vec<f32>` - All the opponent's ratings without the index.
+    /// * `points: f32` - The scored points. 1 is a win, 0.5 a draw and 0 a loss.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
+    /// 
+    /// let mut player = DWZPlayer::new((1193.0, 1), 18);
+    /// player.update_rating(vec![1213.0], 1.0);
+    /// 
+    /// assert_eq!(1261.0, player.dwz.0.round());
+    /// ```
     pub fn update_rating(&mut self, opponent_ratings: Vec<f32>, points: f32) {
         let mut j: f32 = 5.0;
         if self.age.is_in_range(21, 25)
