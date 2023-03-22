@@ -648,3 +648,36 @@ pub const fn div_factorials(x: usize, y: usize) -> usize {
     }
     _res
 }
+/// Rounds to the nearest multiple of `n`.
+/// # Arguments
+/// * `x: T` - The number which shall be rounded.
+/// * `n: T` - The multiplicant.
+/// # Returns
+/// A `T`.
+/// # Examples
+/// ```
+/// use lib_rapid::math::general::round_to_n_mult;
+/// 
+/// assert_eq!(round_to_n_mult(14, 5), 15);
+/// assert_eq!(round_to_n_mult(1932, 2), 1932);
+/// // This function rounds up if in doubt.
+/// assert_eq!(round_to_n_mult(1945, 2), 1946);
+/// ```
+pub fn round_to_n_mult<T: Div<Output = T> +
+                          Mul<Output = T> +
+                          Sub<Output = T> +
+                          Add<Output = T> +
+                          PartialOrd +
+                          From<bool> +
+                          Copy>(x: T, n: T) -> T {
+    let f = x / n;
+    let f1 = f * n;
+    let f2 = (x + true.into()) / n * n;
+    let delta1 = delta(f, f1);
+    let delta2 = delta(f, f2);
+
+    match delta1 <= delta2 {
+        true  => f2,
+        false => f1
+    }
+}

@@ -12,9 +12,9 @@ Current Statistics
 
 | **Item**     | **Count** | **Used RegEx**       | **Used Method**     |
 |--------------|-----------|----------------------|---------------------|
-| Examples     | 312       |(No RegEx required)   | `cargo test`        |
+| Examples     | 313       |(No RegEx required)   | `cargo test`        |
 | Constants    | 187       |`pub const [^f][^n]`  | VSCode RegEx-Search |
-| Functions    | 130       |`pub c?o?n?s?t? ?fn`  | VSCode RegEx-Search |
+| Functions    | 131       |`pub c?o?n?s?t? ?fn`  | VSCode RegEx-Search |
 | Modules      | 31        |`pub mod`             | VSCode RegEx-Search |
 | Traits       | 14        |`pub trait`           | VSCode RegEx-Search |
 | Structs      | 13        |`pub struct`          | VSCode RegEx-Search |
@@ -23,8 +23,11 @@ Current Statistics
 
 **Changelog**
 -----
-0.4.1-preview.3.
+0.4.2
 _____
+- Added Public API: `math::equations::polynomial`.
+- Added Public API: `math::general::round_to_n_mult()`.
+- Added Public API: `math::general::NumTools::pow()`.
 - Added Public API: `math::general::factorial()`.
 - Added Public API: `math::general::div_factorials()`.
 - Added Public API: `compsci::stringhelpers::StringUtils::to_isize()`.
