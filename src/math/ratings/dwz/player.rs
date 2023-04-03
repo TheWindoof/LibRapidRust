@@ -85,11 +85,14 @@ impl DWZPlayer {
         self.dev_coefficient = e;
     }
 }
-
+/// The standard age coefficients of the DWZ rating system.
+/// * Teenagers between 0 and 20 years of age: 5.
+/// * Junior Adults between 21 and 25 years: 10.
+/// * Adults over 25: 15.
 pub const STD_AGE_COEFFICIENTS: [f32; 3] = [ // Teenagers (0 - 20 yrs.)
                                         5.0,
                                         // Junior Adults (21 - 25 yrs.)
                                         10.0,
-                                        // Adults ( age > 26 yrs.)
+                                        // Adults ( age > 25 yrs.)
                                         15.0
                                     ];
