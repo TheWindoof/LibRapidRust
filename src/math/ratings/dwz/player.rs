@@ -19,9 +19,6 @@ impl DWZPlayer {
     /// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
     /// 
     /// let mut player = DWZPlayer::new((1193.0, 1), 18);
-    /// player.update_rating(vec![1213.0], 1.0);
-    /// 
-    /// assert_eq!(1261.0, player.dwz.0.round());
     /// ```
     pub fn new(dwz: (f32, u16), age: u8) -> DWZPlayer {
         DWZPlayer { dwz, age, dev_coefficient: 0.0 }
@@ -30,31 +27,35 @@ impl DWZPlayer {
     /// # Arguments
     /// * `opponent_ratings: Vec<f32>` - All the opponent's ratings without the index.
     /// * `scored: f32` - The scored points. 1 is a win, 0.5 a draw and 0 a loss.
+    /// * `age_coefficients: &[f32; 3]` - Three numbers corresponding to teenagers (0 - 20), young adults (21 - 25) and adults (age > 25). The higher the value, the lower the change in rating per loss or win. Use `math::ratings::dwz::player::STD_AGE_COEFFICIENTS` for the standard values.
     /// # Examples
     /// ```
-    /// use lib_rapid::math::ratings::dwz::player::DWZPlayer;
+    /// use lib_rapid::math::ratings::dwz::player::{DWZPlayer, STD_AGE_COEFFICIENTS};
     /// 
     /// let mut player = DWZPlayer::new((1193.0, 1), 18);
+    /// player.update_rating(vec![1213.0], 1.0, &STD_AGE_COEFFICIENTS);
+    /// 
+    /// assert_eq!(1261.0, player.dwz.0.round());
     /// ```
-    pub fn update_rating(&mut self, opponent_ratings: Vec<f32>, scored: f32) {
+    pub fn update_rating(&mut self, opponent_ratings: Vec<f32>, scored: f32, age_coefficients: &[f32; 3]) {
         let mut expected: Vec<f32> = Vec::with_capacity(opponent_ratings.len());
 
         for r in &opponent_ratings {
             expected.push((1.0+10.0_f32.powf((*r - self.dwz.0) / 400.0)).recip())
         }
         let total_expected: f32 = expected.iter().sum();
-        self.update_dev_coefficient(scored, total_expected);
+        self.update_dev_coefficient(scored, total_expected, age_coefficients);
         
         self.dwz.0 = self.dwz.0 + ((800.0 / (self.dev_coefficient + opponent_ratings.len() as f32) * (scored - total_expected)));
         self.dwz.1.inc();
     }
 
-    fn update_dev_coefficient(&mut self, scored: f32, expected: f32) {
-        let mut j: f32 = 5.0;
+    fn update_dev_coefficient(&mut self, scored: f32, expected: f32, age_coefficients: &[f32; 3]) {
+        let mut j: f32 = age_coefficients[0];
         if self.age.is_in_range(21, 25)
-        { j = 10.0; }
+        { j = age_coefficients[1]; }
         else if self.age > 25
-        { j = 15.0; }
+        { j = age_coefficients[2]; }
 
         let mut accel_factor: f32 = match self.age < 20 && scored > expected {
             true  => { self.dwz.0 / 2000.0 }
@@ -84,3 +85,11 @@ impl DWZPlayer {
         self.dev_coefficient = e;
     }
 }
+
+pub const STD_AGE_COEFFICIENTS: [f32; 3] = [ // Teenagers (0 - 20 yrs.)
+                                        5.0,
+                                        // Junior Adults (21 - 25 yrs.)
+                                        10.0,
+                                        // Adults ( age > 26 yrs.)
+                                        15.0
+                                    ];
