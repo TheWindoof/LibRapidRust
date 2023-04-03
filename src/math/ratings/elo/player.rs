@@ -10,7 +10,7 @@ pub struct EloPlayer {
 impl EloPlayer {
     /// Create a new player.
     /// # Arguments
-    /// * `dwz: (f32, u16)` - The rating. `f32` is the actual rating, `u16` the index which indicates the played matches.
+    /// * `elo: (f32, u16)` - The rating. `f32` is the actual rating, `u16` the index which indicates the played matches.
     /// * `age: u8` - The age of the player.
     /// # Examples
     /// ```
