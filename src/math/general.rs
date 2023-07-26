@@ -687,14 +687,11 @@ pub fn round_to_n_mult<T: Div<Output = T> +
                           PartialOrd +
                           From<bool> +
                           Copy>(x: T, n: T) -> T {
-    let f = x / n;
-    let f1 = f * n;
-    let f2 = (x + true.into()) / n * n;
-    let delta1 = delta(f, f1);
-    let delta2 = delta(f, f2);
+    let x_over_n = x / n;
+    let f1 = (x + true.into()) / n * n;
 
-    match delta1 <= delta2 {
-        true  => f2,
-        false => f1
+    match delta(x_over_n, x) <= delta(x_over_n, f1) {
+        true  => f1,
+        false => x
     }
 }
