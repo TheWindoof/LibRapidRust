@@ -32,5 +32,5 @@ To do that, simply git-clone this repository and then run `cargo doc --open`. Af
 How does it work?
 -----
 
-The Rust-port of LibRapid is a derivative from the main library made for C++ and Python. It's goal is to be optimised for speedy calculations, mathematical and
+The Rust-port of LibRapid is a derivative from the main library made for C++ and Python. Its goal is to be optimised for speedy calculations, mathematical and
 scientific applications.
