@@ -218,7 +218,7 @@ pub trait CharTools {
     /// ```
     #[must_use]
     fn is_closed_bracket(&self) -> bool;
-    /// Gets the corresponding opening bracket if there is one..
+    /// Gets the corresponding opening bracket if there is one.
     /// # Returns
     /// A `Option<char>`.
     /// # Examples
@@ -231,7 +231,7 @@ pub trait CharTools {
     /// ```
     #[must_use]
     fn get_opening_bracket(&self) -> Option<char>;
-    /// Gets the corresponding closing bracket if there is one..
+    /// Gets the corresponding closing bracket if there is one.
     /// # Returns
     /// A `Option<char>`.
     /// # Examples
