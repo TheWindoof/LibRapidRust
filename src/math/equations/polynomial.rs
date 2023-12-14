@@ -17,11 +17,27 @@ use crate::math::general::NumTools;
 /// let p: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]);
 /// let q: Polynomial<usize> = Polynomial::new_from_coefficients(vec![0, 2, 1, 3]);
 /// 
-/// let expected_coefficients = &vec![1, 5, 6, 5];
+/// let commutative_coefficients = &vec![1, 5, 6, 5];
 /// 
 /// // Commutativity is given:
-/// assert_eq!((p.clone() + q.clone()).get_coefficients(), expected_coefficients);
-/// assert_eq!((q.clone() + p.clone()).get_coefficients(), expected_coefficients);
+/// assert_eq!((p.clone() + q.clone()).get_coefficients(), commutative_coefficients);
+/// assert_eq!((q         + p        ).get_coefficients(), commutative_coefficients);
+/// 
+/// // Arbitrary length arithmetic is given:
+/// let a: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]);
+/// let b: Polynomial<usize> = Polynomial::new_from_coefficients(vec![0, 2, 1, 3, 5]);
+/// 
+/// let arbitrary_len_coefficients = &vec![1, 5, 6, 5, 5];
+/// 
+/// assert_eq!((a.clone() + b.clone()).get_coefficients(), arbitrary_len_coefficients);
+/// assert_eq!((b         + a        ).get_coefficients(), arbitrary_len_coefficients);
+/// ```
+/// ```
+/// use lib_rapid::math::equations::polynomial::Polynomial;
+/// 
+/// let p: Polynomial<isize> = Polynomial::new_from_coefficients(vec![1, -3, 5, 2]);
+/// 
+/// assert_eq!(&p.to_string(), "1 - 3x + 5x^2 + 2x^3");
 /// ```
 #[derive(Clone, Debug, PartialEq)]
 pub struct Polynomial<T> {
@@ -243,7 +259,7 @@ impl<T: Copy +
 /// 
 /// let p: Polynomial<isize> = Polynomial::new_from_coefficients(vec![1, -3, 5, 2]);
 /// 
-/// assert_eq!(&p.to_string(), "1x^3 - 3x^2 + 5x + 2");
+/// assert_eq!(&p.to_string(), "1 - 3x + 5x^2 + 2x^3");
 /// ```
 impl<T: Display +
         PartialOrd +
@@ -251,36 +267,22 @@ impl<T: Display +
         Copy> std::fmt::Display for Polynomial<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut res = String::with_capacity(self.get_degree() * 4);
-        let mut current_exponent: usize;
+
         for (exp, coeff) in self.coefficients.iter().enumerate() {
-            current_exponent = self.coefficients.len() - exp - 1;
-            if current_exponent == 0
-            { break; }
+            if coeff == &0.into()
+            { continue; }
+            if exp == 0
+            { res.push_str(&format!("{}", &coeff.to_string())); continue; }
+
             if coeff < &0u8.into()
             { res.push_str(&format!(" - {}x", &coeff.to_string()[1..coeff.to_string().len()])); }
             else
             { res.push_str(&format!(" + {}x", coeff)); }
 
-            if current_exponent != 1
-            { res.push_str(&format!("^{}", current_exponent)); }
+            if exp != 1
+            { res.push_str(&format!("^{}", exp)); }
         }
-        if self.coefficients[self.coefficients.len() - 1] < 0u8.into()
-        { res.push_str(
-            &format!(" - {}",
-                     &self.coefficients[self.coefficients.len() - 1]
-                     .to_string()
-                     [1..self.coefficients
-                        [self.coefficients.len() - 1]
-                        .to_string()
-                        .len()
-                    ]
-                )
-            );
-        }
-        else
-        { res.push_str(&format!(" + {}", self.coefficients[self.coefficients.len() - 1])); }
-
         
-        write!(f, "{}", &res[3..res.len()])
+        write!(f, "{}", res)
     }
 }
