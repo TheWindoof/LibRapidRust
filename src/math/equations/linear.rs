@@ -259,24 +259,24 @@ impl<T: From<u8> +
     }
 }
 
-impl<const C: usize, T: Add<Output = T> +
-                        Sub<Output = T> +
-                        Mul<Output = T> +
-                        Div<Output = T> +
-                        PartialOrd +
-                        Neg<Output = T> +
-                        From<u8> +
-                        Copy +
-                        SubAssign +
-                        AddAssign +
-                        MulAssign +
-                        TryFrom<f64> +
-                        TryFrom<f64> +
-                        Display> From<Polynomial<C, T>> for LinearEquation<T>
-                        where f64: From<T>,
-                        <T as std::convert::TryFrom<f64>>::Error: std::fmt::Debug {
-    fn from(val: Polynomial<C, T>) -> Self {
-        if C > 2
+impl<T: Add<Output = T> +
+        Sub<Output = T> +
+        Mul<Output = T> +
+        Div<Output = T> +
+        PartialOrd +
+        Neg<Output = T> +
+        From<u8> +
+        Copy +
+        SubAssign +
+        AddAssign +
+        MulAssign +
+        TryFrom<f64> +
+        TryFrom<f64> +
+        Display> From<Polynomial<T>> for LinearEquation<T>
+        where f64: From<T>,
+        <T as std::convert::TryFrom<f64>>::Error: std::fmt::Debug {
+    fn from(val: Polynomial<T>) -> Self {
+        if val.get_degree() > 2
         { panic!("Could not convert because coefficients were more than 2."); }
 
         LinearEquation { m:    val.get_coefficients()[0],

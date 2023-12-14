@@ -373,9 +373,9 @@ impl<T: Add<Output = T> +
         AddAssign +
         MulAssign +
         TryFrom<f64> +
-        Display, const C: usize> From<Polynomial<C, T>> for QuadraticEquation<T> {
-    fn from(val: Polynomial<C, T>) -> Self {
-        if C > 3
+        Display> From<Polynomial<T>> for QuadraticEquation<T> {
+    fn from(val: Polynomial<T>) -> Self {
+        if val.get_degree() > 3
         { panic!("Could not convert because coefficients were more than 3."); }
 
         QuadraticEquation { a:          val.get_coefficients()[0],

@@ -10,86 +10,92 @@ use crate::math::general::NumTools;
 /// # Generics
 /// * `const C: usize` - The number of coefficients (degree = C - 1).
 /// * `T` - The type of the coefficients.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Polynomial<const C: usize, T> {
-    coefficients: [T; C],
-    solutions:    Option<[Option<T>; C]>
+#[derive(Clone, Debug, PartialEq)]
+pub struct Polynomial<T> {
+    coefficients: Vec<T>,
+    solutions:    Option<Vec<Option<T>>>
 }
 
-impl<const C: usize, T: From<u8> +
-                        Copy +
-                        std::ops::Sub<Output = T> +
-                        std::ops::Add<Output = T> +
-                        std::ops::Div<Output = T> +
-                        std::ops::Mul<Output = T> +
-                        std::ops::Div +
-                        std::ops::Mul + 
-                        std::ops::SubAssign +
-                        std::ops::AddAssign +
-                        std::ops::MulAssign +
-                        std::cmp::PartialOrd +
-                        std::ops::Sub +
-                        std::ops::Add + 
-                        std::fmt::Display> Polynomial<C, T> {
-    /// Create a new standard polynomial with *C* coefficients set to `1` and of *C - 1*th degree.
-    /// # Returns
-    /// A new `Polynomial<C, T>`
-    /// # Examples
-    /// ```
-    /// use lib_rapid::math::equations::polynomial::Polynomial;
-    /// 
-    /// let p: Polynomial<4, f32> = Polynomial::new();
-    /// assert!(p.get_degree() == 3);
-    /// ```
-    pub fn new() -> Polynomial<C, T> {
-        Polynomial {
-            coefficients: [1u8.into(); C],
-            solutions:    None
-        }
-    }
-    /// Create a new polynomial with *C* custom coefficients.
-    /// # Arguments
-    /// * `coefficients: [T; C]` - The coefficients of the polynomial.
-    /// # Returns
-    /// A new `Polynomial<C, T>`
-    /// # Examples
-    /// ```
-    /// use lib_rapid::math::equations::polynomial::Polynomial;
-    /// 
-    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
-    /// assert!(p.get_degree() == 3);
-    /// ```
-    pub fn new_from_coefficients(coefficients: [T; C]) -> Polynomial<C, T> {
-        Polynomial {
-            coefficients,
-            solutions: None
-        }
-    }
-    /// Gets the coefficients of a `Polynomial`.
-    /// # Returns
-    /// A `[T; C]`.
-    /// # Examples
-    /// ```
-    /// use lib_rapid::math::equations::polynomial::Polynomial;
-    /// 
-    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
-    /// assert_eq!(p.get_coefficients(), [1, 3, 5, 2]);
-    /// ```
-    pub fn get_coefficients(&self) -> [T; C] {
-        self.coefficients
-    }
+impl<T> Polynomial<T> {
     /// Gets the degree of a `Polynomial`.
     /// # Returns
-    /// A `[T; C]`.
+    /// A `usize` equivalent to the degree.
     /// # Examples
     /// ```
     /// use lib_rapid::math::equations::polynomial::Polynomial;
     /// 
-    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
+    /// let p: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]);
     /// assert_eq!(p.get_degree(), 3);
     /// ```
     pub fn get_degree(&self) -> usize {
         self.coefficients.len() - 1
+    }
+    /// Gets the coefficients of a `Polynomial`.
+    /// # Returns
+    /// A `Vec`-Slice over all coefficients.
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let coefficients         = vec![1, 3, 5, 2];
+    /// let p: Polynomial<usize> = Polynomial::new_from_coefficients(coefficients.clone());
+    /// assert_eq!(p.get_coefficients(), &coefficients);
+    /// ```
+    pub fn get_coefficients(&self) -> &Vec<T> {
+        &self.coefficients
+    }
+}
+
+impl<T: From<u8> +
+        Copy +
+        std::ops::Sub<Output = T> +
+        std::ops::Add<Output = T> +
+        std::ops::Div<Output = T> +
+        std::ops::Mul<Output = T> +
+        std::ops::Div +
+        std::ops::Mul + 
+        std::ops::SubAssign +
+        std::ops::AddAssign +
+        std::ops::MulAssign +
+        std::cmp::PartialOrd +
+        std::ops::Sub +
+        std::ops::Add + 
+        std::fmt::Display> Polynomial<T> {
+    /// Create a new standard polynomial with *c* coefficients set to `1` and of *c - 1*th degree.
+    /// # Arguments
+    /// `c: usize` - The number of coefficients.
+    /// # Returns
+    /// A new `Polynomial<T>`
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<f32> = Polynomial::new(4);
+    /// assert!(p.get_degree() == 3);
+    /// ```
+    pub fn new(c: usize) -> Polynomial<T> {
+        Polynomial {
+            coefficients: vec![1.into(); c],
+            solutions:    None
+        }
+    }
+    /// Create a new polynomial with custom coefficients.
+    /// # Arguments
+    /// * `coefficients: vec<T>` - The coefficients of the polynomial.
+    /// # Returns
+    /// A new `Polynomial<T>`
+    /// # Examples
+    /// ```
+    /// use lib_rapid::math::equations::polynomial::Polynomial;
+    /// 
+    /// let p: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]);
+    /// assert!(p.get_degree() == 3);
+    /// ```
+    pub fn new_from_coefficients(coefficients: Vec<T>) -> Polynomial<T> {
+        Polynomial {
+            coefficients,
+            solutions: None
+        }
     }
     /// Evaluates a `Polynomial` for a given input `x`.
     /// # Arguments
@@ -100,39 +106,35 @@ impl<const C: usize, T: From<u8> +
     /// ```
     /// use lib_rapid::math::equations::polynomial::Polynomial;
     /// 
-    /// let p: Polynomial<4, usize> = Polynomial::new_from_coefficients([1, 3, 5, 2]);
-    /// assert_eq!(p.eval(4), 134);
+    /// let p: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]); // Define p(x) as 1 + 3x + 5x² + 2x³
+    /// assert_eq!(p.eval(4), 221); // Because p(4) = 1 + 3×4 + 5×4² + 2×4³ = 221
     /// ```
     pub fn eval(&self, x: T) -> T {
         let mut result: T = 0u8.into();
-        let mut exponent: usize = self.get_degree();
 
-        for coefficient in self.coefficients {
+        for (exponent, coefficient) in self.coefficients.iter().enumerate() {
             
-            result.inc_by(coefficient * x.pow(exponent));
-            if exponent > 0
-            { exponent.dec(); }
+            result.inc_by(*coefficient * x.pow(exponent));
         }
-
         result
     }
 
-    pub fn get_solutions(&mut self) -> Option<[Option<T>; C]>
+    pub fn get_solutions(&mut self) -> &Option<Vec<Option<T>>>
     where
     f64: From<T> + TryInto<T>,
     T:   Neg<Output = T> + TryFrom<f64>,
     <f64 as std::convert::TryInto<T>>::Error: Debug,
     <T as std::convert::TryFrom<f64>>::Error: Debug {
         if self.solutions.is_some()
-        { return self.solutions; }
+        { return &self.solutions; }
 
-        let mut res = [None; C];
+        let mut res = Vec::with_capacity(self.get_degree());
 
         if self.get_degree() == 2 {
             let discriminant = self.coefficients[1].square() -
                                T::from(4) * self.coefficients[0] * self.coefficients[2];
             if discriminant.is_negative()
-            { return None; }
+            { return &None; }
             let x_1 = (- self.coefficients[1] +
                       (f64::from(discriminant).sqrt()).try_into().unwrap()) /
                       (T::from(2) * self.coefficients[0]);
@@ -146,18 +148,18 @@ impl<const C: usize, T: From<u8> +
                 false => { res[0] = Some(x_1); res[1] = Some(x_2);
                            self.solutions = Some(res) }
             }
-            return self.solutions.clone();
+            return &self.solutions;
         }
         if self.get_degree() == 1 {
             res[0] = Some(- self.coefficients[1] / self.coefficients[0]);
-            return self.solutions;
+            return &self.solutions;
         }
-        None
+        &None
     }
 }
 
-impl<const C: usize, T: std::ops::AddAssign + Copy> Add for Polynomial<C, T> {
-    type Output = Polynomial<C, T>;
+impl<T: std::ops::AddAssign + Copy> Add for Polynomial<T> {
+    type Output = Polynomial<T>;
 
     fn add(self, rhs: Self) -> Self::Output {
 
@@ -174,20 +176,20 @@ impl<const C: usize, T: std::ops::AddAssign + Copy> Add for Polynomial<C, T> {
     }
 }
 
-impl<const C: usize, T: std::ops::SubAssign +
-                        Copy +
-                        PartialEq +
-                        From<u8>> Sub for Polynomial<C, T> {
-    type Output = Polynomial<C, T>;
+impl<T: std::ops::Sub<Output = T> +
+        Copy +
+        PartialEq +
+        From<u8>> Sub for Polynomial<T> {
+    type Output = Polynomial<T>;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        let mut res_coeff = self.coefficients;
+        let mut res_coeff: Vec<T> = Vec::with_capacity(self.get_degree() + 1);
         for (index, i) in rhs.coefficients.iter().enumerate() {
-            res_coeff[index] -= *i;
+            res_coeff.push(self.coefficients[index] - *i)
         }
-        let mut _deg = C;
-        for i in res_coeff {
-            if i == 0u8.into() {
+        let mut _deg = self.get_degree();
+        for i in &res_coeff {
+            if i == &0u8.into() {
                 _deg.dec();
                 continue;
             }
@@ -200,25 +202,25 @@ impl<const C: usize, T: std::ops::SubAssign +
     }
 }
 
-impl<const C: usize, T: Copy +
-                        Clone +
-                        PartialEq +
-                        Sub<Output = T> +
-                        SubAssign +
-                        From<u8>> SubAssign for Polynomial<C, T> {
+impl<T: Copy +
+        Clone +
+        PartialEq +
+        Sub<Output = T> +
+        SubAssign +
+        From<u8>> SubAssign for Polynomial<T> {
     fn sub_assign(&mut self, rhs: Self) {
-        *self = *self - rhs;
+        *self = self.clone() - rhs;
     }
 }
 
-impl<const C: usize, T: Copy +
-                        Clone +
-                        PartialEq +
-                        Add<Output = T> +
-                        AddAssign +
-                        From<u8>> AddAssign for Polynomial<C, T> {
+impl<T: Copy +
+        Clone +
+        PartialEq +
+        Add<Output = T> +
+        AddAssign +
+        From<u8>> AddAssign for Polynomial<T> {
     fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs;
+        *self = self.clone() + rhs;
     }
 }
 /// Converts a polynomial into a `String.`
@@ -226,16 +228,16 @@ impl<const C: usize, T: Copy +
 /// ```
 /// use lib_rapid::math::equations::polynomial::Polynomial;
 /// 
-/// let p: Polynomial<4, isize> = Polynomial::new_from_coefficients([1, -3, 5, 2]);
+/// let p: Polynomial<isize> = Polynomial::new_from_coefficients(vec![1, -3, 5, 2]);
 /// 
 /// assert_eq!(&p.to_string(), "1x^3 - 3x^2 + 5x + 2");
 /// ```
-impl<const C: usize, T: Display +
+impl<T: Display +
         PartialOrd +
         From<u8> +
-        Copy> std::fmt::Display for Polynomial<C, T> {
+        Copy> std::fmt::Display for Polynomial<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut res = String::with_capacity(C * 4);
+        let mut res = String::with_capacity(self.get_degree() * 4);
         let mut current_exponent: usize;
         for (exp, coeff) in self.coefficients.iter().enumerate() {
             current_exponent = self.coefficients.len() - exp - 1;
