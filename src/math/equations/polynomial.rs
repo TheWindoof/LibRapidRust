@@ -10,9 +10,22 @@ use crate::math::general::NumTools;
 /// # Generics
 /// * `const C: usize` - The number of coefficients (degree = C - 1).
 /// * `T` - The type of the coefficients.
+/// # Arithmetic operations
+/// ```
+/// use lib_rapid::math::equations::polynomial::Polynomial;
+/// 
+/// let p: Polynomial<usize> = Polynomial::new_from_coefficients(vec![1, 3, 5, 2]);
+/// let q: Polynomial<usize> = Polynomial::new_from_coefficients(vec![0, 2, 1, 3]);
+/// 
+/// let expected_coefficients = &vec![1, 5, 6, 5];
+/// 
+/// // Commutativity is given:
+/// assert_eq!((p.clone() + q.clone()).get_coefficients(), expected_coefficients);
+/// assert_eq!((q.clone() + p.clone()).get_coefficients(), expected_coefficients);
+/// ```
 #[derive(Clone, Debug, PartialEq)]
 pub struct Polynomial<T> {
-    coefficients: Vec<T>,
+    coefficients: Vec<T>, // I have to use `Vec` since I have not yet found a way to add 2 polynomials with arbitrary length.
     solutions:    Option<Vec<Option<T>>>
 }
 
@@ -162,11 +175,11 @@ impl<T: std::ops::AddAssign + Copy> Add for Polynomial<T> {
     type Output = Polynomial<T>;
 
     fn add(self, rhs: Self) -> Self::Output {
-
         Polynomial {
             coefficients: {
-                let mut res_coeff = self.coefficients;
-                for (index, i) in rhs.coefficients.iter().enumerate() {
+                let degree_self_geq_rhs = self.get_degree() >= rhs.get_degree();
+                let mut res_coeff = if degree_self_geq_rhs { self.coefficients.clone() } else { rhs.coefficients.clone() };
+                for (index, i) in (if degree_self_geq_rhs {rhs} else {self}).coefficients.iter().enumerate() {
                     res_coeff[index] += *i;
                 }
                 res_coeff
