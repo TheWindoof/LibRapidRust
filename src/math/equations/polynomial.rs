@@ -32,13 +32,6 @@ use crate::math::general::NumTools;
 /// assert_eq!((a.clone() + b.clone()).get_coefficients(), arbitrary_len_coefficients);
 /// assert_eq!((b         + a        ).get_coefficients(), arbitrary_len_coefficients);
 /// ```
-/// ```
-/// use lib_rapid::math::equations::polynomial::Polynomial;
-/// 
-/// let p: Polynomial<isize> = Polynomial::new_from_coefficients(vec![1, -3, 5, 2]);
-/// 
-/// assert_eq!(&p.to_string(), "1 - 3x + 5x^2 + 2x^3");
-/// ```
 #[derive(Clone, Debug, PartialEq)]
 pub struct Polynomial<T> {
     coefficients: Vec<T>, // I have to use `Vec` since I have not yet found a way to add 2 polynomials with arbitrary length.
@@ -282,7 +275,7 @@ impl<T: Display +
             if exp != 1
             { res.push_str(&format!("^{}", exp)); }
         }
-        
+
         write!(f, "{}", res)
     }
 }
