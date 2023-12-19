@@ -1,9 +1,9 @@
 //! Polynomials in Rust.
 // * TODO: Finding roots.
-// * TODO: Summation/Difference of Polynomials with arbitrary length.
+// * TODO: Difference of Polynomials with arbitrary length.
 // * TODO: Macro for fast creation.
 
-use std::{ops::{Add, Sub, SubAssign, AddAssign, Neg}, fmt::Display, fmt::Debug, convert::TryInto, convert::TryFrom};
+use std::{ops::*, fmt::Display, fmt::{Debug, Formatter}, convert::TryInto, convert::TryFrom};
 
 use crate::math::general::NumTools;
 /// The struct for storing and evaluating polynomials.
@@ -70,19 +70,19 @@ impl<T> Polynomial<T> {
 
 impl<T: From<u8> +
         Copy +
-        std::ops::Sub<Output = T> +
-        std::ops::Add<Output = T> +
-        std::ops::Div<Output = T> +
-        std::ops::Mul<Output = T> +
-        std::ops::Div +
-        std::ops::Mul + 
-        std::ops::SubAssign +
-        std::ops::AddAssign +
-        std::ops::MulAssign +
-        std::cmp::PartialOrd +
-        std::ops::Sub +
-        std::ops::Add + 
-        std::fmt::Display> Polynomial<T> {
+        Sub<Output = T> +
+        Add<Output = T> +
+        Div<Output = T> +
+        Mul<Output = T> +
+        Div +
+        Mul + 
+        SubAssign +
+        AddAssign +
+        MulAssign +
+        PartialOrd +
+        Sub +
+        Add + 
+        Display> Polynomial<T> {
     /// Create a new standard polynomial with *c* coefficients set to `1` and of *c - 1*th degree.
     /// # Arguments
     /// `c: usize` - The number of coefficients.
@@ -145,8 +145,8 @@ impl<T: From<u8> +
     where
     f64: From<T> + TryInto<T>,
     T:   Neg<Output = T> + TryFrom<f64>,
-    <f64 as std::convert::TryInto<T>>::Error: Debug,
-    <T as std::convert::TryFrom<f64>>::Error: Debug {
+    <f64 as TryInto<T>>::Error: Debug,
+    <T   as TryFrom<f64>>::Error: Debug {
         if self.solutions.is_some()
         { return &self.solutions; }
 
@@ -180,7 +180,8 @@ impl<T: From<u8> +
     }
 }
 
-impl<T: std::ops::AddAssign + Copy> Add for Polynomial<T> {
+impl<T: AddAssign +
+        Copy> Add for Polynomial<T> {
     type Output = Polynomial<T>;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -198,7 +199,7 @@ impl<T: std::ops::AddAssign + Copy> Add for Polynomial<T> {
     }
 }
 
-impl<T: std::ops::Sub<Output = T> +
+impl<T: Sub<Output = T> +
         Copy +
         PartialEq +
         From<u8>> Sub for Polynomial<T> {
@@ -245,6 +246,21 @@ impl<T: Copy +
         *self = self.clone() + rhs;
     }
 }
+
+impl<T: Copy +
+        Clone +
+        Neg<Output = T>> Neg for Polynomial<T> {
+    type Output = Polynomial<T>;
+
+    fn neg(self) -> Self::Output {
+        let mut _res = self.clone();
+        for (i, coeff) in self.get_coefficients().iter().enumerate()
+        { _res.coefficients[i] = - *coeff; }
+
+        _res
+    }
+}
+
 /// Converts a polynomial into a `String.`
 /// # Examples
 /// ```
@@ -257,8 +273,8 @@ impl<T: Copy +
 impl<T: Display +
         PartialOrd +
         From<u8> +
-        Copy> std::fmt::Display for Polynomial<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        Copy> Display for Polynomial<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut res = String::with_capacity(self.get_degree() * 4);
 
         for (exp, coeff) in self.coefficients.iter().enumerate() {
