@@ -2,8 +2,10 @@ use crate::math::general::NumTools;
 
 /// The player necessary for a Elo evaluation.
 pub struct EloPlayer {
+    /// Actual Rating and played matches.
     pub elo:  (f32, u16),
     pub age:  u8,
+    /// The development factor called 'k'. The higher the factor, the quicker the rating changes.
     k_factor: u8
 }
 

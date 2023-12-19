@@ -4,7 +4,7 @@ use super::player::DWZPlayer;
 pub struct Match<'a> {
     player_one: &'a mut DWZPlayer,
     player_two: &'a mut DWZPlayer,
-    /// 1: Player one wins. 0: Player two wins.
+    /// 1: Player one wins. 0: Player two wins. 0.5: Draw.
     pub result:         f32
 }
 

@@ -4,8 +4,10 @@ use crate::math::general::NumTools;
 
 /// The player necessary for a DWZ evaluation.
 pub struct DWZPlayer {
+    /// Actual Rating and played matches.
     pub dwz:         (f32, u16),
     pub age:         u8,
+    /// The development factor. The higher the factor, the quicker the rating changes.
     dev_coefficient: f32
 }
 

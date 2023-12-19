@@ -4,8 +4,8 @@ use super::player::EloPlayer;
 pub struct Match<'a> {
     player_one: &'a mut EloPlayer,
     player_two: &'a mut EloPlayer,
-    /// 1: Player one wins. 0: Player two wins.
-    pub result:         f32
+    /// 1: Player one wins. 0: Player two wins. 0.5: Draw.
+    pub result: f32
 }
 
 impl Match<'_> {
